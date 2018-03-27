@@ -1,9 +1,13 @@
-var ENEMIES = 3;
+const ENEMIES = 3;
 
-var TILE_WIDTH = 101;
-var TILE_HEIGHT = 171;
+const TILE_WIDTH = 101;
+const TILE_HEIGHT = 171;
+const MAP_WIDTH = 5;
+const MAP_HEIGHT = 6;
 
-var worldGrid = [5][6];
+var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
+
+var worldGrid = [MAP_WIDTH][6];
 // Distance of 83px between tile rows
 var enemyYPositions = [65, 148, 231];
 
@@ -16,7 +20,7 @@ function randomXOffset(){
 }
 
 function randomPlayerXTile(){
-  return Math.floor(Math.random() * 5);
+  return Math.floor(Math.random() * MAP_WIDTH);
 }
 
 function randomSpeed(){
@@ -45,7 +49,7 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     this.x += dt * this.speed;
 
-    if(this.x >= 505){
+    if(this.x >= mapWidthPixels){
       this.x = randomXOffset();
       this.y = enemyYPositions[randomEnemyRow()];
       this.speed = randomSpeed();
@@ -81,9 +85,9 @@ Player.prototype.handleInput = function(e){
   if(e == 'up') this.gridY--;
   if(e == 'down') this.gridY++;
   if(this.gridX < 0) this.gridX = 0;
-  if(this.gridX > 4) this.gridX = 4;
+  if(this.gridX > MAP_WIDTH - 1) this.gridX = MAP_WIDTH - 1;
   if(this.gridY < 0) this.gridY = 0;
-  if(this.gridY > 5) this.gridY = 5;
+  if(this.gridY > MAP_HEIGHT - 1) this.gridY = MAP_HEIGHT - 1;
 }
 
 
@@ -94,7 +98,7 @@ var allEnemies = [];
 for(let i = 0; i < ENEMIES; i++){
   allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), enemyYPositions[randomEnemyRow()]));
 }
-var player = new Player(randomPlayerXTile(), 5);
+var player = new Player(randomPlayerXTile(), MAP_HEIGHT - 1);
 
 
 
