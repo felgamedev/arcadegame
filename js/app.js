@@ -13,6 +13,8 @@ var allEnemies = [];
 // Distance of 83px between tile rows
 var enemyYPositions = [65, 148, 231];
 
+var score = 0;
+
 function randomEnemyRow(){
   return Math.floor(Math.random() * 3) + 1;
 }
@@ -84,6 +86,13 @@ Player.prototype.update = function(dt){
       }
     });
   }
+
+  // Score condition
+  if(this.gridY == 0){
+    score++;
+    console.log(score);
+    this.resetPlayer();
+  }
 }
 
 Player.prototype.render = function(){
@@ -115,10 +124,6 @@ for(let i = 0; i < ENEMIES; i++){
   allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow()));
 }
 var player = new Player(randomPlayerXTile(), MAP_HEIGHT - 1);
-
-
-
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
