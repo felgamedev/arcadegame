@@ -77,8 +77,9 @@ Player.prototype.update = function(dt){
     let player = this;
     allEnemies.forEach(function(enemy){
       if(enemy.row === player.gridY){
+        // Actual enemy collision
         if(enemy.x < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH > player.gridX * TILE_WIDTH){
-          console.log("Collision");
+          player.resetPlayer();
         }
       }
     });
@@ -98,6 +99,11 @@ Player.prototype.handleInput = function(e){
   if(this.gridX > MAP_WIDTH - 1) this.gridX = MAP_WIDTH - 1;
   if(this.gridY < 0) this.gridY = 0;
   if(this.gridY > MAP_HEIGHT - 1) this.gridY = MAP_HEIGHT - 1;
+}
+
+Player.prototype.resetPlayer = function(){
+  this.gridX = randomPlayerXTile();
+  this.gridY = MAP_HEIGHT -1;
 }
 
 
