@@ -80,7 +80,7 @@ Player.prototype.update = function(dt){
     allEnemies.forEach(function(enemy){
       if(enemy.row === player.gridY){
         // Actual enemy collision
-        if(enemy.x < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH > player.gridX * TILE_WIDTH){
+        if(enemy.x + 20 < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH - 20 > player.gridX * TILE_WIDTH){
           player.resetPlayer();
         }
       }
