@@ -15,8 +15,8 @@ function randomXOffset(){
   return -TILE_WIDTH - (Math.random() * 150);
 }
 
-function randomPlayerYTile(){
-  return Math.floor(Math.random() * 6);
+function randomPlayerXTile(){
+  return Math.floor(Math.random() * 5);
 }
 
 function randomSpeed(){
@@ -94,7 +94,7 @@ var allEnemies = [];
 for(let i = 0; i < ENEMIES; i++){
   allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), enemyYPositions[randomEnemyRow()]));
 }
-var player = new Player(3, 3);
+var player = new Player(randomPlayerXTile(), 5);
 
 
 
