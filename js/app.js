@@ -5,14 +5,16 @@ const TILE_HEIGHT = 171;
 const MAP_WIDTH = 5;
 const MAP_HEIGHT = 6;
 
-var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 
+var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var worldGrid = [MAP_WIDTH][6];
+
+var allEnemies = [];
 // Distance of 83px between tile rows
 var enemyYPositions = [65, 148, 231];
 
 function randomEnemyRow(){
-  return Math.floor(Math.random() * enemyYPositions.length);
+  return Math.floor(Math.random() * 3) + 1;
 }
 
 function randomXOffset(){
@@ -37,8 +39,7 @@ var Enemy = function(xSpeed, xStartLocation, yLocation) {
   // we've provided one for you to get started
   this.speed = xSpeed;
   this.x = xStartLocation;
-  this.y = yLocation;
-  this.row;
+  this.row = yLocation;
 };
 
 // Update the enemy's position, required method for game
@@ -51,14 +52,14 @@ Enemy.prototype.update = function(dt) {
 
     if(this.x >= mapWidthPixels){
       this.x = randomXOffset();
-      this.y = enemyYPositions[randomEnemyRow()];
+      this.row = randomEnemyRow();
       this.speed = randomSpeed();
     }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, (this.row * 83) - 25);
 };
 
 // Now write your own player class
@@ -68,9 +69,6 @@ var Player = function(gridX, gridY) {
   this.sprite = 'images/char-boy.png';
   this.gridX = gridX;
   this.gridY = gridY;
-
-  this.x = this.gridX * TILE_WIDTH;
-  this.y = (this.gridY * 83) - 35;
 }
 
 Player.prototype.update = function(dt){}
@@ -94,9 +92,9 @@ Player.prototype.handleInput = function(e){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [];
+
 for(let i = 0; i < ENEMIES; i++){
-  allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), enemyYPositions[randomEnemyRow()]));
+  allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow()));
 }
 var player = new Player(randomPlayerXTile(), MAP_HEIGHT - 1);
 
