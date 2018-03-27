@@ -71,7 +71,19 @@ var Player = function(gridX, gridY) {
   this.gridY = gridY;
 }
 
-Player.prototype.update = function(dt){}
+Player.prototype.update = function(dt){
+  // Check for collisions when on stone-block tiles
+  if(this.gridY > 0 && this.gridY < 4){
+    let player = this;
+    allEnemies.forEach(function(enemy){
+      if(enemy.row === player.gridY){
+        if(enemy.x < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH > player.gridX * TILE_WIDTH){
+          console.log("Collision");
+        }
+      }
+    });
+  }
+}
 
 Player.prototype.render = function(){
   ctx.drawImage(Resources.get(this.sprite), this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
