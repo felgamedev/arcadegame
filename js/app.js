@@ -72,6 +72,7 @@ var Player = function(gridX, gridY) {
   this.gridX = gridX;
   this.gridY = gridY;
   this.score = 0;
+  this.lives = 3;
 }
 
 Player.prototype.update = function(dt){
@@ -82,7 +83,12 @@ Player.prototype.update = function(dt){
       if(enemy.row === player.gridY){
         // Actual enemy collision
         if(enemy.x + 20 < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH - 20 > player.gridX * TILE_WIDTH){
-          player.resetPlayer();
+          player.lives--;
+          if(player.lives >= 0){
+            player.resetPlayer();
+          } else {
+            gameOver();
+          }
         }
       }
     });
@@ -166,5 +172,9 @@ renderScoreBoard = function(){
   ctx.fillStyle = '#000';
   ctx.font = '36px sans-serif';
   ctx.fillText("Score: " + player.score, 24, 37);
-  ctx.fillText("Lives: ", livesBoxX + 4, 37);
+  ctx.fillText("Lives: " + player.lives, livesBoxX + 4, 37);
+}
+
+gameOver = function(){
+  
 }
