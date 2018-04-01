@@ -13,8 +13,6 @@ var allEnemies = [];
 // Distance of 83px between tile rows
 var enemyYPositions = [65, 148, 231];
 
-var score = 0;
-
 function randomEnemyRow(){
   return Math.floor(Math.random() * 3) + 1;
 }
@@ -28,7 +26,7 @@ function randomPlayerXTile(){
 }
 
 function randomSpeed(){
-  return 100 + Math.floor(Math.random() * 100);
+  return Math.floor(Math.random() * 100);
 }
 
 // Enemies our player must avoid
@@ -39,7 +37,8 @@ var Enemy = function(xSpeed, xStartLocation, yLocation) {
 
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
-  this.speed = xSpeed;
+  this.baseSpeed = 200;
+  this.speed = xSpeed + this.baseSpeed;
   this.x = xStartLocation;
   this.row = yLocation;
 };
@@ -55,7 +54,7 @@ Enemy.prototype.update = function(dt) {
     if(this.x >= mapWidthPixels){
       this.x = randomXOffset();
       this.row = randomEnemyRow();
-      this.speed = randomSpeed();
+      this.speed = randomSpeed() + this.baseSpeed;
     }
 };
 
@@ -71,6 +70,7 @@ var Player = function(gridX, gridY) {
   this.sprite = 'images/char-boy.png';
   this.gridX = gridX;
   this.gridY = gridY;
+  this.score = 0;
 }
 
 Player.prototype.update = function(dt){
@@ -89,14 +89,36 @@ Player.prototype.update = function(dt){
 
   // Score condition
   if(this.gridY == 0){
-    score++;
-    console.log(score);
+    this.score++;
+
+    switch(this.score){
+      case 3: let enemyMed = new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow());
+      enemyMed.baseSpeed = 300;
+      allEnemies.push(enemyMed);
+        break;
+      case 7: let enemyFast = new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow());
+      enemyFast.baseSpeed = 350;
+      allEnemies.push(enemyFast);
+        break;
+      case 10: //Win
+    }
     this.resetPlayer();
   }
 }
 
 Player.prototype.render = function(){
   ctx.drawImage(Resources.get(this.sprite), this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
+  this.renderScore();
+}
+
+Player.prototype.renderScore = function(){
+  ctx.font = '36px sans-serif';
+  ctx.fillStyle = '#000';
+  ctx.fillRect(20, 5, 200, 40);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(22, 7, 196, 36);
+  ctx.fillStyle = '#000';
+  ctx.fillText("Score: " + this.score, 24, 37);
 }
 
 Player.prototype.handleInput = function(e){
