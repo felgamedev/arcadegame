@@ -5,7 +5,6 @@ const TILE_HEIGHT = 171;
 const MAP_WIDTH = 5;
 const MAP_HEIGHT = 6;
 
-
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
 
@@ -110,17 +109,6 @@ Player.prototype.update = function(dt){
 
 Player.prototype.render = function(){
   ctx.drawImage(Resources.get(this.sprite), this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
-  this.renderScore();
-}
-
-Player.prototype.renderScore = function(){
-  ctx.font = '36px sans-serif';
-  ctx.fillStyle = '#000';
-  ctx.fillRect(20, 5, 200, 40);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(22, 7, 196, 36);
-  ctx.fillStyle = '#000';
-  ctx.fillText("Score: " + this.score, 24, 37);
 }
 
 Player.prototype.handleInput = function(e){
@@ -161,3 +149,22 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+renderScoreBoard = function(){
+  // Draw initial boxes in black
+
+  let livesBoxX = mapWidthPixels - 220;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(20, 5, 200, 40);
+  ctx.fillRect(livesBoxX, 5, 200, 40);
+  // Draw white boxes on top
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(22, 7, 196, 36);
+  ctx.fillRect(livesBoxX + 2, 7, 196, 36);
+
+  ctx.fillStyle = '#000';
+  ctx.font = '36px sans-serif';
+  ctx.fillText("Score: " + player.score, 24, 37);
+  ctx.fillText("Lives: ", livesBoxX + 4, 37);
+}

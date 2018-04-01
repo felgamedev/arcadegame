@@ -139,6 +139,7 @@ var Engine = (function(global) {
         }
 
         renderEntities();
+        renderScoreBoard();
     }
 
     /* This function is called by the render function and is called on each game
