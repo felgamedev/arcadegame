@@ -176,6 +176,7 @@ renderScoreBoard = function(){
 
   ctx.fillStyle = '#000';
   ctx.font = '36px sans-serif';
+  ctx.font = '36px Calibri';
   ctx.fillText("Score: " + player.score, 24, 37);
   ctx.fillText("Lives: " + player.lives, livesBoxX + 4, 37);
 }
