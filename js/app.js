@@ -73,6 +73,7 @@ var Player = function(gridX, gridY) {
   this.gridY = gridY;
   this.score = 0;
   this.lives = 3;
+  this.moves = 0;
 }
 
 Player.prototype.update = function(dt){
@@ -117,15 +118,19 @@ Player.prototype.render = function(){
   ctx.drawImage(Resources.get(this.sprite), this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
 }
 
+// Handle valid inputs, increment moves on success
 Player.prototype.handleInput = function(e){
-  if(e == 'left') this.gridX--;
-  if(e == 'right') this.gridX++;
-  if(e == 'up') this.gridY--;
-  if(e == 'down') this.gridY++;
-  if(this.gridX < 0) this.gridX = 0;
-  if(this.gridX > MAP_WIDTH - 1) this.gridX = MAP_WIDTH - 1;
-  if(this.gridY < 0) this.gridY = 0;
-  if(this.gridY > MAP_HEIGHT - 1) this.gridY = MAP_HEIGHT - 1;
+  if(e == 'left' && !(this.gridX - 1 < 0)) {
+    this.gridX--;
+  } else if(e == 'right' && !(this.gridX + 1 > MAP_WIDTH - 1)) {
+    this.gridX++;
+  } else if(e == 'up' && !(this.gridY - 1 < 0)) {
+    this.gridY--;
+  } else if(e == 'down' && !(this.gridY + 1 > MAP_HEIGHT - 1)) {
+    this.gridY++;
+  } else return;
+
+  this.moves++;
 }
 
 Player.prototype.resetPlayer = function(){
