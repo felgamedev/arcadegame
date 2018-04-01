@@ -7,24 +7,26 @@ const MAP_HEIGHT = 6;
 
 
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
-var worldGrid = [MAP_WIDTH][6];
-
 var allEnemies = [];
-// Distance of 83px between tile rows
-var enemyYPositions = [65, 148, 231];
 
+
+// Utiliy functions for entity creation
 function randomEnemyRow(){
   return Math.floor(Math.random() * 3) + 1;
 }
 
+// Random starting location for bugs offscreen
+// Larger number gives greater variance of bug spread
 function randomXOffset(){
-  return -TILE_WIDTH - (Math.random() * 150);
+  return -TILE_WIDTH - (Math.random() * 300);
 }
 
-function randomPlayerXTile(){
+// Random tile location in the x axis
+function randomXTile(){
   return Math.floor(Math.random() * MAP_WIDTH);
 }
 
+// A random speed between 0 and 100
 function randomSpeed(){
   return Math.floor(Math.random() * 100);
 }
@@ -133,7 +135,7 @@ Player.prototype.handleInput = function(e){
 }
 
 Player.prototype.resetPlayer = function(){
-  this.gridX = randomPlayerXTile();
+  this.gridX = randomXTile();
   this.gridY = MAP_HEIGHT -1;
 }
 
@@ -145,7 +147,7 @@ Player.prototype.resetPlayer = function(){
 for(let i = 0; i < ENEMIES; i++){
   allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow()));
 }
-var player = new Player(randomPlayerXTile(), MAP_HEIGHT - 1);
+var player = new Player(randomXTile(), MAP_HEIGHT - 1);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
