@@ -1,6 +1,15 @@
-frontend-nanodegree-arcade-game
+frontend-nanodegree-arcade-game by felgamedev
 ===============================
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+## How to run the game
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+Load the game into your browser by either forking, downloading or opening this project's [GithubPages URL](https://felgamedev.github.io/arcadegame/)
+
+## How to play
+
+Move your character using the arrow keys on your keyboard. Get across the paved walkway and into the water without touching any bugs to score a point. Score **10 points** to win the game!
+
+As the game progresses more bugs will try to block your path!
+
+
+Touching a bug will reset your character to the bottom row of the game and deduct one of your **lives**. Your remaining lives are indicated in the top right of the game window.
