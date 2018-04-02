@@ -5,6 +5,7 @@ const TILE_HEIGHT = 171;
 const MAP_WIDTH = 5;
 const MAP_HEIGHT = 6;
 
+const PLAYER_LIVES = 3;
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
 var player;
@@ -73,7 +74,7 @@ var Player = function(gridX, gridY) {
   this.gridX = gridX;
   this.gridY = gridY;
   this.score = 0;
-  this.lives = 3;
+  this.lives = PLAYER_LIVES;
   this.moves = 0;
 }
 
