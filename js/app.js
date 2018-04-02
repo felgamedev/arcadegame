@@ -11,6 +11,8 @@ const PLAYER_LIVES = 3;
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
 var player;
+var isGameOver = false;
+var playerWon = false;
 
 
 // Utiliy functions for entity creation
@@ -163,11 +165,8 @@ document.addEventListener('keyup', function(e) {
 
     // Press any button to restart
     if(isGameOver){
-      player = new Player(randomXTile(), MAP_HEIGHT - 1);
-      // Clear enemies and repopulate to remove any additional from progress
-      allEnemies = [];
-      generateEnemies();
       // reset game and clear modal
+      resetGame();
       return;
     }
 
@@ -188,14 +187,71 @@ renderScoreBoard = function(){
   ctx.fillRect(livesBoxX + 2, 7, 196, 36);
 
   ctx.fillStyle = '#000';
-  ctx.font = '36px sans-serif';
   ctx.font = '36px Calibri';
   ctx.fillText("Score: " + player.score, 24, 37);
   ctx.fillText("Lives: " + player.lives, livesBoxX + 4, 37);
 }
 
-gameOver = function(){
-  
+resetGame = function(){
+  // Create new player to reset score and moves
+  player = new Player(randomXTile(), MAP_HEIGHT - 1);
+
+  // Clear enemies and repopulate to remove any additional from progress
+  allEnemies = [];
+  generateEnemies();
+
+  isGameOver = false;
+  playerWon = false;
 }
+
+gameOver = function(){
+  isGameOver = true;
+  playerWon = (player.lives == 0) ? false : true;
+}
+
+renderEndGameModal = function(){
+  let modalGridX = 1;
+  let modalGridY = 2;
+  let modalX = modalGridX * TILE_WIDTH;
+  let modalY = modalGridY * 83 - 35;
+  let modalWidth = TILE_WIDTH * 3;
+  let modalHeight = 4 * 83;
+  let border = 2;
+
+  // General panel rendering
+  ctx.fillStyle = "#000";
+  ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
+
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(modalX + border, modalY + border, modalWidth - 2 * border, modalHeight - border * 2);
+
+  let heading = (playerWon) ? "You won!" : "You lost..";
+  let secondText = (playerWon) ? "Great job, check out these stats!" : (player.score >= 7) ? "You were so close! Give it another go" : "Watch out for those bugs, they'll getcha!";
+
+  ctx.fillStyle = "#000";
+
+  // Heading rendering
+  ctx.font = "48px Calibri";
+  let headingX = modalX + modalWidth/2 - (ctx.measureText(heading).width / 2);
+  let headingY = modalY + modalHeight/3;
+  ctx.fillText(heading, headingX, headingY);
+
+  // Secondary text rendering
+  ctx.font = "16px Calibri";
+  let secondX = modalX + modalWidth/2 - (ctx.measureText(secondText).width / 2);
+  let secondY = modalY + modalHeight/2;
+  ctx.fillText(secondText, secondX, secondY);
+
+  if(playerWon) {
+    // Render moves
+    ctx.fillText("Moves", modalX + modalWidth/4 - (ctx.measureText("Moves").width/2), secondY + 24);
+    ctx.fillText(player.moves.toString(), modalX + modalWidth/4 - (ctx.measureText(player.moves.toString()).width/2), secondY + 40);
+
+    // Render time
+    ctx.fillText("Time", modalX + modalWidth/4*3 - (ctx.measureText("Time").width/2), secondY + 24);
+    // ctx.fillText(timerString, modalX + modalWidth/2 - (ctx.measureText(timerString).width/2), secondY + 40);
+  }
+}
+
 generateEnemies();
 player = new Player(randomXTile(), MAP_HEIGHT - 1);

@@ -78,7 +78,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
+        if(!isGameOver) updateEntities(dt);
         // checkCollisions();
     }
 
@@ -139,7 +139,11 @@ var Engine = (function(global) {
         }
 
         renderEntities();
-        renderScoreBoard();
+        if(!isGameOver) {
+          renderScoreBoard();
+        } else {
+          renderEndGameModal();
+        }
     }
 
     /* This function is called by the render function and is called on each game
