@@ -41,6 +41,8 @@ var Enemy = function(xSpeed, xStartLocation, yLocation) {
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
   this.sprite = 'images/enemy-bug.png';
+  this.fasterSprite = 'images/enemy-bug-faster.png';
+  this.fastestSprite = 'images/enemy-bug-fastest.png';
 
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
@@ -105,12 +107,15 @@ Player.prototype.update = function(dt){
     this.score++;
 
     switch(this.score){
+      // Add faster and fastest enemy when specific points scored
       case 3: let enemyMed = new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow());
       enemyMed.baseSpeed = 300;
+      enemyMed.sprite = enemyMed.fasterSprite;
       allEnemies.push(enemyMed);
         break;
       case 7: let enemyFast = new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow());
       enemyFast.baseSpeed = 350;
+      enemyFast.sprite = enemyFast.fastestSprite;
       allEnemies.push(enemyFast);
         break;
       case SCORE_TO_WIN: gameOver();
