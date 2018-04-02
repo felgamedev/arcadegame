@@ -7,6 +7,7 @@ const MAP_HEIGHT = 6;
 
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
+var player;
 
 
 // Utiliy functions for entity creation
@@ -142,11 +143,11 @@ Player.prototype.resetPlayer = function(){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
-for(let i = 0; i < ENEMIES; i++){
-  allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow()));
+generateEnemies = function(){
+  for(let i = 0; i < ENEMIES; i++){
+    allEnemies.push(new Enemy(randomSpeed(), randomXOffset(), randomEnemyRow()));
+  }
 }
-var player = new Player(randomXTile(), MAP_HEIGHT - 1);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -158,6 +159,16 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
+    // Press any button to restart
+    if(isGameOver){
+      player.resetPlayer();
+      // Clear enemies and repopulate to remove any additional from progress
+      allEnemies = [];
+      generateEnemies();
+      // reset game and clear modal
+      return;
+    }
+    
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
@@ -184,3 +195,5 @@ renderScoreBoard = function(){
 gameOver = function(){
   
 }
+generateEnemies();
+player = new Player(randomXTile(), MAP_HEIGHT - 1);
