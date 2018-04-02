@@ -5,7 +5,9 @@ const TILE_HEIGHT = 171;
 const MAP_WIDTH = 5;
 const MAP_HEIGHT = 6;
 
+const SCORE_TO_WIN = 10;
 const PLAYER_LIVES = 3;
+
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
 var player;
@@ -110,7 +112,8 @@ Player.prototype.update = function(dt){
       enemyFast.baseSpeed = 350;
       allEnemies.push(enemyFast);
         break;
-      case 10: //Win
+      case SCORE_TO_WIN: gameOver();
+      break;
     }
     this.resetPlayer();
   }
