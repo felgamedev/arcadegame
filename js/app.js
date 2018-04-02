@@ -89,11 +89,10 @@ Player.prototype.update = function(dt){
         // Actual enemy collision
         if(enemy.x + 20 < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH - 20 > player.gridX * TILE_WIDTH){
           player.lives--;
-          if(player.lives >= 0){
-            player.resetPlayer();
-          } else {
+          if(player.lives == 0){
             gameOver();
           }
+          player.resetPlayerPosition();
         }
       }
     });
@@ -115,7 +114,7 @@ Player.prototype.update = function(dt){
       case SCORE_TO_WIN: gameOver();
       break;
     }
-    this.resetPlayer();
+    this.resetPlayerPosition();
   }
 }
 
@@ -138,11 +137,10 @@ Player.prototype.handleInput = function(e){
   this.moves++;
 }
 
-Player.prototype.resetPlayer = function(){
+Player.prototype.resetPlayerPosition = function(){
   this.gridX = randomXTile();
   this.gridY = MAP_HEIGHT -1;
 }
-
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -165,14 +163,14 @@ document.addEventListener('keyup', function(e) {
 
     // Press any button to restart
     if(isGameOver){
-      player.resetPlayer();
+      player = new Player(randomXTile(), MAP_HEIGHT - 1);
       // Clear enemies and repopulate to remove any additional from progress
       allEnemies = [];
       generateEnemies();
       // reset game and clear modal
       return;
     }
-    
+
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
