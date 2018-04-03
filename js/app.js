@@ -40,12 +40,11 @@ stopGameTimer = function(){
 }
 
 gameTimeToString = function(){
-  let timeString;
+  let timeString = "";
   let totalSeconds = Math.floor(timeElapsed / 1000);
   let minutes = Math.floor(totalSeconds / 60);
   let seconds = totalSeconds % 60;
 
-  timeString = "Time: ";
   timeString += (minutes < 10) ? "0" + minutes : minutes;
   timeString += ":";
   timeString += (seconds < 10) ? "0" + seconds : seconds;
@@ -247,7 +246,7 @@ renderScoreBoard = function(){
   score += (player.score < 10) ? " " + player.score : player.score;
   score += "/" + SCORE_TO_WIN;
   let lives = "Lives: " + player.lives;
-  let time = gameTimeToString();
+  let time = "Time: " + gameTimeToString();
   let textY = boxHeight/2 + ctx.measureText('m').width/2;
 
   ctx.fillText(score, boxWidth/2 - ctx.measureText(score).width/2, textY);
@@ -322,7 +321,7 @@ renderEndGameModal = function(){
 
     // Render time
     ctx.fillText("Time", modalX + modalWidth/4*3 - (ctx.measureText("Time").width/2), secondY + 24);
-    // ctx.fillText(timerString, modalX + modalWidth/2 - (ctx.measureText(timerString).width/2), secondY + 40);
+    ctx.fillText(gameTimeToString(), modalX + modalWidth/4*3 - (ctx.measureText(gameTimeToString()).width/2), secondY + 40);
   }
 }
 
