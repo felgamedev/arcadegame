@@ -8,12 +8,50 @@ const MAP_HEIGHT = 6;
 const SCORE_TO_WIN = 10;
 const PLAYER_LIVES = 3;
 
+const THREE_MINUTES = 3 * 60 * 1000;
+
 var mapWidthPixels = TILE_WIDTH * MAP_WIDTH;
 var allEnemies = [];
 var player;
 var isGameOver = false;
 var playerWon = false;
 
+var isTimerStopped = true;
+var timerIntervalID;
+var timerStart = 0;
+var timeElapsed = 0;
+
+startGameTimer = function(){
+  isTimerStopped = false;
+  timerStart = Date.now();
+  timerIntervalID = setInterval(function(){
+    timeElapsed = Date.now() - timerStart;
+    // Pause timer on 10 minutes of time
+    if(timeElapsed >= THREE_MINUTES) {
+      gameOver();
+    }
+  }, 500);
+}
+
+stopGameTimer = function(){
+  isTimerStopped = true;
+  clearInterval(timerIntervalID);
+  timeElapsed = Date.now() - timerStart;
+}
+
+gameTimeToString = function(){
+  let timeString;
+  let totalSeconds = Math.floor(timeElapsed / 1000);
+  let minutes = Math.floor(totalSeconds / 60);
+  let seconds = totalSeconds % 60;
+
+  timeString = "Time: ";
+  timeString += (minutes < 10) ? "0" + minutes : minutes;
+  timeString += ":";
+  timeString += (seconds < 10) ? "0" + seconds : seconds;
+
+  return timeString;
+}
 
 // Utiliy functions for entity creation
 function randomEnemyRow(){
@@ -91,7 +129,8 @@ Player.prototype.update = function(dt){
     allEnemies.forEach(function(enemy){
       if(enemy.row === player.gridY){
         // Actual enemy collision
-        if(enemy.x + 20 < (player.gridX * TILE_WIDTH) + TILE_WIDTH && enemy.x + TILE_WIDTH - 20 > player.gridX * TILE_WIDTH){
+        if(enemy.x + 20 < (player.gridX * TILE_WIDTH) + TILE_WIDTH
+          && enemy.x + TILE_WIDTH - 20 > player.gridX * TILE_WIDTH){
           player.lives--;
           if(player.lives == 0){
             gameOver();
@@ -126,11 +165,13 @@ Player.prototype.update = function(dt){
 }
 
 Player.prototype.render = function(){
-  ctx.drawImage(Resources.get(this.sprite), this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
+  ctx.drawImage(Resources.get(this.sprite),
+    this.gridX * TILE_WIDTH, (this.gridY * 83) - 35);
 }
 
 // Handle valid inputs, increment moves on success
 Player.prototype.handleInput = function(e){
+  if(!isGameOver && isTimerStopped) startGameTimer();
   if(e == 'left' && !(this.gridX - 1 < 0)) {
     this.gridX--;
   } else if(e == 'right' && !(this.gridX + 1 > MAP_WIDTH - 1)) {
@@ -179,22 +220,42 @@ document.addEventListener('keyup', function(e) {
 });
 
 renderScoreBoard = function(){
+  let boxWidth = mapWidthPixels / 3 - 10;
+  let boxHeight = 40;
+  let livesBoxX = mapWidthPixels - boxWidth;
+  let border = 2;
+
   // Draw initial boxes in black
-
-  let livesBoxX = mapWidthPixels - 220;
-
   ctx.fillStyle = '#000';
-  ctx.fillRect(20, 5, 200, 40);
-  ctx.fillRect(livesBoxX, 5, 200, 40);
+  ctx.fillRect(0, 0, boxWidth, boxHeight);
+  ctx.fillRect(mapWidthPixels/2 - boxWidth/2, 0, boxWidth, boxHeight);
+  ctx.fillRect(livesBoxX, 0, boxWidth, boxHeight);
+
   // Draw white boxes on top
   ctx.fillStyle = '#fff';
-  ctx.fillRect(22, 7, 196, 36);
-  ctx.fillRect(livesBoxX + 2, 7, 196, 36);
+  ctx.fillRect(border, border, boxWidth - 2 * border, boxHeight - 2 * border);
+  ctx.fillRect(mapWidthPixels/2 - boxWidth/2 + border, border,
+    boxWidth - 2 * border, boxHeight - 2 * border);
+  ctx.fillRect(livesBoxX + 2, border,
+    boxWidth - 2 * border, boxHeight - 2 * border);
 
+  // Text element rendering
   ctx.fillStyle = '#000';
-  ctx.font = '36px Calibri';
-  ctx.fillText("Score: " + player.score, 24, 37);
-  ctx.fillText("Lives: " + player.lives, livesBoxX + 4, 37);
+  ctx.font = '28px Calibri';
+
+  let score = "Score:";
+  score += (player.score < 10) ? " " + player.score : player.score;
+  score += "/" + SCORE_TO_WIN;
+  let lives = "Lives: " + player.lives;
+  let time = gameTimeToString();
+  let textY = boxHeight/2 + ctx.measureText('m').width/2;
+
+  ctx.fillText(score, boxWidth/2 - ctx.measureText(score).width/2, textY);
+
+  ctx.fillText(time, mapWidthPixels/2 - ctx.measureText(time).width/2, textY);
+
+  ctx.fillText(lives, livesBoxX + boxWidth/2 - ctx.measureText(lives).width/2,
+    textY);
 }
 
 resetGame = function(){
@@ -207,11 +268,13 @@ resetGame = function(){
 
   isGameOver = false;
   playerWon = false;
+  timeElapsed = 0;
 }
 
 gameOver = function(){
+  stopGameTimer();
   isGameOver = true;
-  playerWon = (player.lives == 0) ? false : true;
+  playerWon = (player.lives == 0 || timeElapsed >= THREE_MINUTES) ? false : true;
 }
 
 renderEndGameModal = function(){
@@ -228,10 +291,15 @@ renderEndGameModal = function(){
   ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
 
   ctx.fillStyle = "#fff";
-  ctx.fillRect(modalX + border, modalY + border, modalWidth - 2 * border, modalHeight - border * 2);
+  ctx.fillRect(modalX + border, modalY + border,
+    modalWidth - 2 * border, modalHeight - border * 2);
 
   let heading = (playerWon) ? "You won!" : "You lost..";
-  let secondText = (playerWon) ? "Great job, check out these stats!" : (player.score >= 7) ? "You were so close! Give it another go" : "Watch out for those bugs, they'll getcha!";
+  let secondText = (playerWon) ? "Great job, check out these stats!" :
+    (player.score >= 7) ? "You were so close! Give it another go" :
+    "Watch out for those bugs, they'll getcha!";
+  // catch for timer running out
+  secondText = (!playerWon && timeElapsed >= THREE_MINUTES) ? "You ran out of time!" : secondText;
 
   ctx.fillStyle = "#000";
 
